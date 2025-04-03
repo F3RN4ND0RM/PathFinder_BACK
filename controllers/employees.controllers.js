@@ -56,7 +56,7 @@ export const logIn = async(req, res) =>{
     try{
         //Retrive email form body
         const email = req.body.email
-        const pass = req.body.pass || null
+        const pass = req.body.pass || ""
 
 
         const employee = await Employees.findOne({where: {email : email}})
@@ -76,10 +76,11 @@ export const logIn = async(req, res) =>{
             sendOTP(employee.email, employee.otp, employee.name)
             return res.status(200).json({status : "false"})
         }            
-
         
         //Validating encripted password 
-        const isValid = await bcrypt.compare(pass, employee.pass)        
+        
+        
+        const isValid = await bcrypt.compare(pass || "", employee.pass)        
         if (!isValid)            
             return  res.status(400).json({error : "Failed Auth"})
 
