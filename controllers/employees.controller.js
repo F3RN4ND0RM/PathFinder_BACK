@@ -9,12 +9,13 @@ import Absinfo from '../models/absinfo.model.js';
 
 export const addAbilities = async(req, res) =>{
     const employeeId = req.employeeId
+    const abilityId = req.body.abilityId
     try{
         await Absinfo.create({
             idemployee: employeeId,
-            idabs:  1
+            idabs:  abilityId
         })
-        return res.status(200).json({msg : "hola mundo"})
+        return res.status(200).json({msg : "Ability Added"})
     }catch(error){
         console.error(error)
         return res.status(400).json({error: "Something went wrong"})

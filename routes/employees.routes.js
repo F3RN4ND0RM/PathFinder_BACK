@@ -1,12 +1,16 @@
 import { Router } from 'express'
 import { check } from "express-validator";
 import {checkValidator} from "../middlewares/check-validator.js"
-import {logIn, signUp, updateEmployeeInfo, getEmployeeInfo, addAbilities} from '../controllers/employees.controllers.js'
+import {logIn, signUp, updateEmployeeInfo, getEmployeeInfo, addAbilities} from '../controllers/employees.controller.js'
 import {validatesJWT} from '../middlewares/jwt-validator.js'
+import { validatesAbilities } from '../middlewares/abilities-validator.js';
 const router = Router()
 
-router.put('/abilities', [  
-    validatesJWT
+router.put('/abilities', [
+    check('abilityId', 'Ability Id empty').notEmpty(),
+    checkValidator,     
+    validatesJWT,
+    validatesAbilities
 ], addAbilities)
 
 
