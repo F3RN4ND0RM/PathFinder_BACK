@@ -2,16 +2,26 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import Employees from   '../models/employees.model.js'
 import crypto from 'crypto';
-import {sendOTP} from  './email.controller.js'
+import {sendOTP, sendNotification} from  './email.controller.js'
+import { error } from 'console';
+import { where } from 'sequelize';
 
 
+
+ /* Get Employee info
+    Returns {error: "Auth Failed"} if employee doesnt exists
+    Returns { "name": "name", "rolename": "rolename", "email": "email","percentage": "percentage"} if ok
+*/
 export const getEmployeeInfo = async(req,res)=>{
+    //Retrieves employee ID
     const employeeId = req.employeeId
     try{
+
         const employee = await Employees.findByPk(employeeId, {            
             attributes : ['name', 'rolename', 'email', 'percentage'     ]
         })
 
+        //if employee return values
         return employee
             ? res.status(200).json(employee)
             : res.status(400).json({error: "Auth Failed"})
@@ -22,9 +32,71 @@ export const getEmployeeInfo = async(req,res)=>{
     }
 }
 
-export const updateEmployee = async(req, res) =>{
+
+
+
+ /* Update Employee info
+    Returns {error: "Auth Failed"} if employee doesnt exists
+    Returns { "name": "name", "rolename": "rolename", "email": "email","percentage": "percentage"} if ok
+*/
+export const updateEmployeeInfo = async(req, res) =>{
+    const employeeId = req.employeeId
+    const {name, email, pass} = req.body    
     try{
-        return res.status(200).json({msg: req.body.employee})
+
+        const employee = await Employees.findByPk(employeeId)
+
+        if(!employee)
+            return res.status(400).json({error :  "Auth Failed"})
+
+        const oldEmail = employee.email
+        const oldName = employee.name
+        
+        const isValid = await bcrypt.compare(pass || "", employee.pass)                
+        if(!isValid)            
+            return  res.status(400).json({error : "Failed Auth"})
+                
+        await Employees.update({
+            name : name,
+            email : email
+        },{
+            where :{
+                id : employeeId
+            }
+        })
+
+
+        const message = `
+            You had update your information.
+            <br><br>
+            <tr>
+                <td>
+                    <strong>Old</strong>
+                </td>
+                <td>
+                    <strong>New</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ${oldEmail}
+                </td>
+                <td>
+                    ${email}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ${oldName}
+                </td>
+                <td>
+                    ${name}
+                </td>
+            </tr>
+        `
+        sendNotification(employee.email, "Your Info had change", message,employee.name)
+
+        return res.status(200).json({msg: "Employee info updated"})
     }catch(error){
         console.error(error)
         return res.status(400).json({error: "Something went wrong"})

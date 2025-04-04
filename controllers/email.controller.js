@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 
 })
 
-export const sendOTP = async(mail, otp, nombre) =>{
+export const sendOTP = async(mail, otp, name) =>{
     const html = `<!DOCTYPE html>
     <html lang="es">
     <head>
@@ -27,7 +27,7 @@ export const sendOTP = async(mail, otp, nombre) =>{
                     <table role="presentation" width="600" cellspacing="5" cellpadding="5" border="0" style="background-color: white; border-radius: 10px;padding: 10px; margin-top: 100px;">
                         <tr>
                             <td align="left">
-                                <h2>!Hi, ${nombre}!</h2>
+                                <h2>!Hi, ${name}!</h2>
                             </td>                    
                         </tr>
                         <tr>
@@ -56,6 +56,53 @@ export const sendOTP = async(mail, otp, nombre) =>{
             from : 'PATH FINDER <noti@pathfinder.com',
             to : mail,
             subject : 'Verify your identity',
+            html : html,            
+        })
+        
+        return res
+            ?  true
+            : false
+
+    }catch(error){        
+        console.log(error)
+        return false
+    }
+
+}
+
+export const sendNotification = async(mail, subject, message, name) =>{
+    const html = `<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${subject}</title>
+    </head>
+    <body style="margin: 0;padding: 0; background-color: rgba(241, 241, 245, 0.851); font-family:Verdana, Geneva, Tahoma, sans-serif; text-align: center;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+            <tr>
+                <td align="center">
+                    <table role="presentation" width="600" cellspacing="5" cellpadding="5" border="0" style="background-color: white; border-radius: 10px;padding: 10px; margin-top: 100px;">
+                        <tr>
+                            <td align="left">
+                                <h2>!Hi, ${name}!</h2>
+                            </td>                    
+                        </tr>
+                         ${message}                                                                           
+                    </table>                  
+                </td>
+            </tr>
+        </table>
+        <br>
+        <br>
+    </body>
+    </html>
+    `
+    try{
+        const res = await transporter.sendMail({
+            from : 'PATH FINDER <noti@pathfinder.com',
+            to : mail,
+            subject : `${subject}`,
             html : html,            
         })
         
