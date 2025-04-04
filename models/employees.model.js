@@ -48,7 +48,8 @@ const Employees = sequelize.define('Employee',
     },
     {
         modelName : 'Employee',
-        freezeTableName : 'employee'
+        freezeTableName : true,
+        tableName : 'Employee'
     }
 )
 

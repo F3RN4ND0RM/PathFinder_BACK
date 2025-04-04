@@ -3,9 +3,23 @@ import jwt from 'jsonwebtoken'
 import Employees from   '../models/employees.model.js'
 import crypto from 'crypto';
 import {sendOTP, sendNotification} from  './email.controller.js'
-import { error } from 'console';
-import { where } from 'sequelize';
+import { Employees as Emp, Abilities as Abs } from '../models/associations.js';
+import Absinfo from '../models/absinfo.model.js';
 
+
+export const addAbilities = async(req, res) =>{
+    const employeeId = req.employeeId
+    try{
+        await Absinfo.create({
+            idemployee: employeeId,
+            idabs:  1
+        })
+        return res.status(200).json({msg : "hola mundo"})
+    }catch(error){
+        console.error(error)
+        return res.status(400).json({error: "Something went wrong"})
+    }
+}
 
 
  /* Get Employee info

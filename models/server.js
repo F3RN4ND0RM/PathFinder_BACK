@@ -3,14 +3,15 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import db from '../db/db.js'
 import employeeRoute from '../routes/employees.routes.js'
-
+import abilitiesRoute from '../routes/abilities.routes.js'
 //Defining server class
 class Server{
 
     app ; //aplicacion
     port //puerto en el que correra
     apiPaths = {
-        employees : '/employees' //rutas
+        employees : '/employees', //rutas,
+        abilities : '/abilities'
     }
 
     //server constructor, inititilizes server
@@ -52,6 +53,7 @@ class Server{
     routes(){            
         //defining routes    
         this.app.use(this.apiPaths.employees, employeeRoute)
+        this.app.use(this.apiPaths.abilities, abilitiesRoute)
     }
 
     //Initilizes server
