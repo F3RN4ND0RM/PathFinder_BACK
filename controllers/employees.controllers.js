@@ -11,12 +11,15 @@ export const getEmployeeInfo = async(req,res)=>{
         const employee = await Employees.findByPk(employeeId, {            
             attributes : ['name', 'rolename', 'email', 'percentage'     ]
         })
-        return res.status(200).json(employee)
+
+        return employee
+            ? res.status(200).json(employee)
+            : res.status(400).json({error: "Auth Failed"})
+        
     }catch(error){
         console.error(error)
         return res.status(400).json({error: "Something went wrong"})
     }
-
 }
 
 export const updateEmployee = async(req, res) =>{
