@@ -1,8 +1,23 @@
 import { Router } from 'express'
 import { check } from "express-validator";
 import {checkValidator} from "../middlewares/check-validator.js"
-import {logIn, signUp} from '../controllers/employees.controllers.js'
+import {logIn, signUp, updateEmployee, getEmployeeInfo} from '../controllers/employees.controllers.js'
+import {validatesJWT} from '../middlewares/jwt-validator.js'
 const router = Router()
+
+
+//Get Employee Ingo
+router.get('/' , [    
+    validatesJWT
+], getEmployeeInfo)
+
+
+//Updates Employees dats
+router.put('/update' , [
+    //Checking username on body
+    validatesJWT
+], updateEmployee)
+
 
 //Setting Passwor Route
 router.post('/signup' , [

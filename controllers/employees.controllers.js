@@ -5,13 +5,26 @@ import crypto from 'crypto';
 import {sendOTP} from  './email.controller.js'
 
 
+export const getEmployeeInfo = async(req,res)=>{
+    const employeeId = req.employeeId
+    try{
+        const employee = await Employees.findByPk(employeeId, {            
+            attributes : ['name', 'rolename', 'email', 'percentage'     ]
+        })
+        return res.status(200).json(employee)
+    }catch(error){
+        console.error(error)
+        return res.status(400).json({error: "Something went wrong"})
+    }
+
+}
 
 export const updateEmployee = async(req, res) =>{
     try{
-
+        return res.status(200).json({msg: req.body.employee})
     }catch(error){
         console.error(error)
-        return res.status(400).json({error : error})
+        return res.status(400).json({error: "Something went wrong"})
     }
 }
 
