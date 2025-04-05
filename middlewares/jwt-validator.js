@@ -20,7 +20,10 @@ export const validatesJWT = async (req, res, next) => {
             //Verify it 
             await jwt.verify(token,String(process.env.SECRET), (err, employeeToken) => {
                 //updates employee id
-                employeeId = employeeToken.id                
+                console.log(err)
+                
+                if(!err)
+                    employeeId = employeeToken.id                
             })
         }         
         

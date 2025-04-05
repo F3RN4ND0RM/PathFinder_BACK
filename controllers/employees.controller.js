@@ -32,8 +32,16 @@ export const getEmployeeInfo = async(req,res)=>{
     const employeeId = req.employeeId
     try{
 
-        const employee = await Employees.findByPk(employeeId, {            
-            attributes : ['name', 'rolename', 'email', 'percentage'     ]
+        const employee = await Emp.findByPk(employeeId, {            
+            attributes : ['name', 'rolename', 'email', 'percentage'     ],
+            include : {
+                 model: Abs,
+                as: 'AbilitiesA',      
+                attributes : ['name','id'],
+                through : {
+                    attributes : ['createdAt']
+                }
+            }
         })
 
         //if employee return values
