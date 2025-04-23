@@ -3,16 +3,53 @@ import jwt from 'jsonwebtoken'
 import Employees from   '../models/employees.model.js'
 import crypto from 'crypto';
 import {sendOTP, sendNotification} from  './email.controller.js'
-import {Employees as Emp ,Abilities as Abs, Courses } from '../models/associations.js';
+import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects} from '../models/associations.js';
 import Absinfo from '../models/absinfo.model.js';
 
-
-
-
- /* Adds ability to employee    
+/* getEmployeeProject
+    return list of projects that employee worked on if ok
     Returns { "msg" : "Ability Added"} if ok
+    Returns {error :  "Employee has not registered courses"} if not ok
 */
-export const getEmployeesCourses = async(req, res) =>{
+export const getEmployeeProject = async(req, res) =>{
+    const employeeId = req.employeeId;
+    
+    try{
+        const roles = await Emp.findByPk(employeeId,{
+            attributes : [],
+            include : {
+                model : Roles,
+                attributes : ['id', 'name', 'description'],
+                as:'rolesOfEmployee', 
+                through : {
+                    attributes : ['status', 'createdAt', 'updatedAt']
+                },
+                
+                include : {
+                    model : Projects,
+                    attributes : ['deliveryLeader', 'name', 'status']                                        
+                }
+
+            }
+        })
+
+        return roles
+            ? res.status(200).json(roles)
+            : res.status(404).json({error :  "Employee has not registered roles"})
+
+    }catch(error){
+        console.error(error)
+        return res.status(400).json({error: "Something went wrong"})
+    }
+}
+
+
+
+ /* employeesCourses
+    return list of courses that employee is subscribed if ok
+    Returns {error :  "Employee has not registered courses"} if not ok
+*/
+export const getEmployeeCourses = async(req, res) =>{
     const employeeId = req.employeeId;
     
     try{
@@ -23,7 +60,7 @@ export const getEmployeesCourses = async(req, res) =>{
                 as:'coursesOfEmployee', 
                 attributes : ['id','name', 'description', 'imgUrl'],
                 through :{
-                    attributes :['status', 'favstatus','createdAt', 'updatedAt']
+                    attributes :['status', 'favstatus','createdAt', 'updatedAt'],
                 } 
             }
         })
