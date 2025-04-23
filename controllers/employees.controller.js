@@ -113,9 +113,6 @@ export const getEmployeeInfo = async(req,res)=>{
                 through : {
                     attributes : ['createdAt']
                 }
-            }, {
-                model : Levels,
-                attributes : ['id', 'name']
             }]
         })
 
@@ -246,8 +243,12 @@ export const logIn = async(req, res) =>{
         const pass = req.body.pass || ""
 
 
-        const employee = await Employees.findOne({
+        const employee = await Emp.findOne({
             where: {email : email},
+            include :  {
+                model : Levels,
+                attributes : ['id', 'name']
+            }
         })
 
         //Email is not registered
@@ -280,7 +281,7 @@ export const logIn = async(req, res) =>{
             ,{ expiresIn: "86400000" })
 
         //Login ok
-        return res.status(200).json({status : "true", token : jwtoken})                    
+        return res.status(200).json({status : "true", token : jwtoken, level : employee.Level})                    
 
     }catch(error){
         console.error(error)
