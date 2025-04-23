@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import db from '../db/db.js'
 import employeeRoute from '../routes/employees.routes.js'
 import abilitiesRoute from '../routes/abilities.routes.js'
+import coursesRoute from '../routes/courses.routes.js'
 //Defining server class
 class Server{
 
@@ -11,7 +12,8 @@ class Server{
     port //puerto en el que correra
     apiPaths = {
         employees : '/employees', //rutas,
-        abilities : '/abilities'
+        abilities : '/abilities',
+        courses : '/courses'
     }
 
     //server constructor, inititilizes server
@@ -54,6 +56,7 @@ class Server{
         //defining routes    
         this.app.use(this.apiPaths.employees, employeeRoute)
         this.app.use(this.apiPaths.abilities, abilitiesRoute)
+        this.app.use(this.apiPaths.courses, coursesRoute)
     }
 
     //Initilizes server

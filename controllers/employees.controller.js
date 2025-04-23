@@ -3,10 +3,46 @@ import jwt from 'jsonwebtoken'
 import Employees from   '../models/employees.model.js'
 import crypto from 'crypto';
 import {sendOTP, sendNotification} from  './email.controller.js'
-import { Employees as Emp, Abilities as Abs } from '../models/associations.js';
+import {Employees as Emp ,Abilities as Abs, Courses } from '../models/associations.js';
 import Absinfo from '../models/absinfo.model.js';
 
 
+
+
+ /* Adds ability to employee    
+    Returns { "msg" : "Ability Added"} if ok
+*/
+export const getEmployeesCourses = async(req, res) =>{
+    const employeeId = req.employeeId;
+    
+    try{
+        const courses = await Emp.findByPk(employeeId,{
+            attributes : [],
+            include : {
+                model : Courses,
+                as:'coursesOfEmployee', 
+                attributes : ['id','name', 'description', 'imgUrl'],
+                through :{
+                    attributes :['status', 'favstatus','createdAt', 'updatedAt']
+                } 
+            }
+        })
+
+        return courses
+            ? res.status(200).json(courses)
+            : res.status(404).json({error :  "Employee has not registered courses"})
+
+    }catch(error){
+        console.error(error)
+        return res.status(400).json({error: "Something went wrong"})
+    }
+}
+
+
+
+ /* Adds ability to employee    
+    Returns { "msg" : "Ability Added"} if ok
+*/
 export const addAbilities = async(req, res) =>{
     const employeeId = req.employeeId
     const abilityId = req.body.abilityId
@@ -36,7 +72,7 @@ export const getEmployeeInfo = async(req,res)=>{
             attributes : ['name', 'rolename', 'email', 'percentage'     ],
             include : {
                  model: Abs,
-                as: 'AbilitiesA',      
+                as: 'abilitiesOfEmployee',      
                 attributes : ['name','id'],
                 through : {
                     attributes : ['createdAt']

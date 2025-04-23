@@ -1,20 +1,30 @@
 import { Router } from 'express'
 import { check } from "express-validator";
 import {checkValidator} from "../middlewares/check-validator.js"
-import {logIn, signUp, updateEmployeeInfo, getEmployeeInfo, addAbilities} from '../controllers/employees.controller.js'
+import {logIn, signUp, updateEmployeeInfo, getEmployeeInfo, addAbilities, getEmployeesCourses} from '../controllers/employees.controller.js'
 import {validatesJWT} from '../middlewares/jwt-validator.js'
 import { validatesAbilities } from '../middlewares/abilities-validator.js';
 const router = Router()
 
-router.put('/abilities', [
+//Adds Abilities to employees
+router.get('/courses', [                 
+    //Validates JWT
+    validatesJWT
+], getEmployeesCourses)
+
+
+//Adds Abilities to employees
+router.put('/abilities', [    
     check('abilityId', 'Ability Id empty').notEmpty(),
     checkValidator,     
+    //Validates JWT
     validatesJWT,
-    validatesAbilities
+    //Validates Abilities existance
+    validatesAbilities    
 ], addAbilities)
 
 
-//Get Employee Ingo
+//Get Employee Info
 router.get('/' , [    
     //Validating JWT
     validatesJWT
