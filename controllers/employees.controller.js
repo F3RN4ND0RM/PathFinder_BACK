@@ -3,8 +3,7 @@ import jwt from 'jsonwebtoken'
 import Employees from   '../models/employees.model.js'
 import crypto from 'crypto';
 import {sendOTP, sendNotification} from  './email.controller.js'
-import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects} from '../models/associations.js';
-import Absinfo from '../models/absinfo.model.js';
+import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects, Levels} from '../models/associations.js';
 
 /* getEmployeeProject
     return list of projects that employee worked on if ok
@@ -107,14 +106,17 @@ export const getEmployeeInfo = async(req,res)=>{
 
         const employee = await Emp.findByPk(employeeId, {            
             attributes : ['name', 'rolename', 'email', 'percentage'     ],
-            include : {
+            include : [{
                  model: Abs,
                 as: 'abilitiesOfEmployee',      
                 attributes : ['name','id'],
                 through : {
                     attributes : ['createdAt']
                 }
-            }
+            }, {
+                model : Levels,
+                attributes : ['id', 'name']
+            }]
         })
 
         //if employee return values
@@ -140,7 +142,8 @@ export const updateEmployeeInfo = async(req, res) =>{
     const {name, email, pass} = req.body    
     try{
 
-        const employee = await Employees.findByPk(employeeId)
+        const employee = await Emp.findByPk(employeeId, {
+        })
 
         if(!employee)
             return res.status(400).json({error :  "Auth Failed"})
@@ -243,7 +246,9 @@ export const logIn = async(req, res) =>{
         const pass = req.body.pass || ""
 
 
-        const employee = await Employees.findOne({where: {email : email}})
+        const employee = await Employees.findOne({
+            where: {email : email},
+        })
 
         //Email is not registered
         if(!employee)   

@@ -1,6 +1,6 @@
 import { Sequelize, DataTypes} from "sequelize";
 import sequelize from "../db/db.js";
-
+import Levels from "./levels.model.js";
 
 //Defining Empolyees sequelize model
 const Employees = sequelize.define('Employee',
@@ -39,7 +39,11 @@ const Employees = sequelize.define('Employee',
         },
         idlevel : {
             type : DataTypes.INTEGER,
-            allowNull : false
+            allowNull : false,
+            references :{
+                model: Levels,
+                key: 'id'
+            }
         },
         otp : {
             type : DataTypes.STRING,
