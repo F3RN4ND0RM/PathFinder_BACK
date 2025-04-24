@@ -84,7 +84,7 @@ export const getEmployeeProject = async(req, res) =>{
                 
                 include : {
                     model : Projects,
-                    attributes : ['deliveryLeader', 'name', 'status']                                        
+                    attributes : ['name', 'status']                                        
                 }
 
             }
