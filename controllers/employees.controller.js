@@ -3,11 +3,44 @@ import jwt from 'jsonwebtoken'
 import Employees from   '../models/employees.model.js'
 import crypto from 'crypto';
 import {sendOTP, sendNotification} from  './email.controller.js'
-import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects, Levels} from '../models/associations.js';
+import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects, Levels, Certifications} from '../models/associations.js';
+
+/* getEmployeeCertifications
+    return list of certifications that employee worked on if ok
+    Returns { "msg" : "Ability Added"} if ok
+    Returns {error :  "Employee has not registered courses"} if not ok
+*/
+
+export const getEmployeeCertifications = async(req, res) =>{
+    const employeeId = req.employeeId;
+    
+    try{
+        const roles = await Emp.findByPk(employeeId,{
+            attributes : [],
+            include : {
+                model : Certifications,  
+                attributes : ['id', 'name', 'description'],
+                as:'certificationsOfEmployee',            
+                through : {
+                    attributes : ['expiration', 'createdAt', 'updatedAt']
+                }    
+            }
+        })
+
+        return roles
+            ? res.status(200).json(roles)
+            : res.status(404).json({error :  "Employee has not registered Certifications"})
+
+    }catch(error){
+        console.error(error)
+        return res.status(400).json({error: "Something went wrong"})
+    }
+}
+
+
 
 /* getEmployeeProject
     return list of projects that employee worked on if ok
-    Returns { "msg" : "Ability Added"} if ok
     Returns {error :  "Employee has not registered courses"} if not ok
 */
 export const getEmployeeProject = async(req, res) =>{
@@ -34,7 +67,7 @@ export const getEmployeeProject = async(req, res) =>{
 
         return roles
             ? res.status(200).json(roles)
-            : res.status(404).json({error :  "Employee has not registered roles"})
+            : res.status(404).json({error :  "Employee has not registered Projects"})
 
     }catch(error){
         console.error(error)

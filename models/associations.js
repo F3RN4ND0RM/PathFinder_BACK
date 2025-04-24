@@ -7,6 +7,8 @@ import Assigned from "./assigned.model.js"
 import Roles from "./roles.model.js";
 import Projects from "./projects.model.js";
 import Levels from "./levels.model.js"
+import Certinfo from "./certinfo.model.js"
+import Certifications from "./certifications.model.js";
 Employees.belongsToMany(Abilities, {as : 'abilitiesOfEmployee', foreignKey : 'idemployee', through : Absinfo})
 Abilities.belongsToMany(Employees, {as: 'employeesByAbility', foreignKey : 'idabs', through : Absinfo })
 
@@ -22,4 +24,7 @@ Roles.belongsTo(Projects, { foreignKey : 'idProject'})
 Levels.hasMany(Employees, {foreignKey : 'idlevel'})
 Employees.belongsTo(Levels, {foreignKey : 'idlevel'})
 
-export { Employees, Abilities, Courses,Roles, Projects, Levels };
+Employees.belongsToMany(Certifications, {as : 'certificationsOfEmployee', foreignKey : 'idEmployee', through : Certinfo})
+Certifications.belongsToMany(Employees, {as : 'employyesByCertifications', foreignKey : 'idCert', through : Certinfo})
+
+export { Employees, Abilities, Courses,Roles, Projects, Levels, Certifications };
