@@ -4,6 +4,31 @@ import Employees from   '../models/employees.model.js'
 import crypto from 'crypto';
 import {sendOTP, sendNotification} from  './email.controller.js'
 import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects, Levels, Certifications} from '../models/associations.js';
+import Certinfo from '../models/certinfo.model.js';
+import Absinfo from '../models/absinfo.model.js';
+
+
+
+ /* Adds ability to employee    
+    Returns { "msg" : "Ability Added"} if ok
+*/
+export const addCertifications = async(req, res) =>{
+    const employeeId = req.employeeId
+    const certificationId = req.body.certificationId
+    const expiration = req.body.expiration
+    try{
+        await Certinfo.create({
+            idEmployee: employeeId,
+            idCert:  certificationId,
+            expiration : expiration,
+        })
+        return res.status(200).json({msg : "certification Added"})
+    }catch(error){
+        console.error(error)
+        return res.status(400).json({error: "Something went wrong"})
+    }
+}
+
 
 /* getEmployeeCertifications
     return list of certifications that employee worked on if ok
