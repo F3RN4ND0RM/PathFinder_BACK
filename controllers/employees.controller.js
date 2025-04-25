@@ -70,7 +70,7 @@ export const getEmployeeCertifications = async(req, res) =>{
 */
 export const getEmployeeProject = async(req, res) =>{
     const employeeId = req.employeeId;
-    const status = req.query.status
+    const status = req.query.status || true
     
     try{
         const roles = await Emp.findByPk(employeeId,{

@@ -52,17 +52,30 @@ export const coursesRecommendations = async(req, res) =>{
             tecnologias,
             meta, 
             proyecto,
-            task: "Con base en las certificaciones del empleado, los cursos disponibles y sus intereses (tecnologías, meta y proyecto), genera un arreglo de los ID de los cursos más relevantes para alcanzar su meta y completar su proyecto. Devuelve únicamente un arreglo plano con los ID numéricos más apropiados en orden de prioridad. considera el nivel de expertiz según las certificaciones"         
+            task: "Regresa un texto arreglo plano, no añadas texto. Con base en las certificaciones del empleado, los cursos disponibles y sus intereses (tecnologías, meta y proyecto), genera un arreglo de los ID de los cursos más relevantes para alcanzar su meta y completar su proyecto. Devuelve únicamente un arreglo plano con los ID numéricos más apropiados en orden de prioridad. considera el nivel de expertiz según las certificaciones"         
         }}
 
-        const response = await client.chat.completions.create(
-            model="deepseek-chat",
-            messages=[
-                {"role": "user", "content": context}
-            ]
-        )
 
-        return res.status(200).json(response)
+
+        const response = await client.chat.completions.create({            
+            model:"deepseek-chat",
+            messages:[
+                {"role": "user", "content": JSON.stringify(context)}
+            ]
+            }
+        )
+        
+        const coursesRecommended = JSON.parse(response.choices[0].message.content) 
+                    
+        let courses = await Courses.findAll({
+            where: {
+              id: {
+                [Op.in]: coursesRecommended
+              }
+            }
+          });
+
+        return res.status(200).json(courses)
 
     }catch(error){
         console.log(error)
