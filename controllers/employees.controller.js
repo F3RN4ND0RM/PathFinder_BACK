@@ -70,6 +70,7 @@ export const getEmployeeCertifications = async(req, res) =>{
 */
 export const getEmployeeProject = async(req, res) =>{
     const employeeId = req.employeeId;
+    const status = req.body.status
     
     try{
         const roles = await Emp.findByPk(employeeId,{
@@ -84,7 +85,10 @@ export const getEmployeeProject = async(req, res) =>{
                 
                 include : {
                     model : Projects,
-                    attributes : ['name', 'status']                                        
+                    attributes : ['name', 'status'],
+                    where :  {
+                        status : status
+                    }                                  
                 }
 
             }

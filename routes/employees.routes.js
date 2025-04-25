@@ -32,6 +32,8 @@ router.get('/certifications', [
 
 //getsProject from employee
 router.get('/projects', [                 
+    check('status', 'invalid status' ).isBoolean(),
+    checkValidator,    
     //Validates JWT
     validatesJWT
 ], getEmployeeProject)

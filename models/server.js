@@ -5,6 +5,7 @@ import db from '../db/db.js'
 import employeeRoute from '../routes/employees.routes.js'
 import abilitiesRoute from '../routes/abilities.routes.js'
 import coursesRoute from '../routes/courses.routes.js'
+import aiRoute from "../routes/ai.routes.js"
 //Defining server class
 class Server{
 
@@ -13,7 +14,8 @@ class Server{
     apiPaths = {
         employees : '/employees', //rutas,
         abilities : '/abilities',
-        courses : '/courses'
+        courses : '/courses',
+        ai : '/ai'
     }
 
     //server constructor, inititilizes server
@@ -57,6 +59,7 @@ class Server{
         this.app.use(this.apiPaths.employees, employeeRoute)
         this.app.use(this.apiPaths.abilities, abilitiesRoute)
         this.app.use(this.apiPaths.courses, coursesRoute)
+        this.app.use(this.apiPaths.ai, aiRoute)
     }
 
     //Initilizes server
