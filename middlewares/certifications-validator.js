@@ -6,7 +6,7 @@ import Certification from '../models/certifications.model.js'
 
 
 //Middleware to validate Certifications
-//Returns  {error: "user not authenticated"} if Abilities is not registered
+//Returns  {error: "certification not valid"} if Abilities is not registered
 //Continues if Certification is confirmed an user existes
 export const validatesCertifications = async (req, res, next) => {
     //Retrieves token from header

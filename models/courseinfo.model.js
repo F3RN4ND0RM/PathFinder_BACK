@@ -9,6 +9,7 @@ const Courseinfo = sequelize.define('Courseinfo',
     {
         status : {
             type : DataTypes.INTEGER,
+            defaultValue : 1,
             allowNull : false,
         },
         favstatus : {

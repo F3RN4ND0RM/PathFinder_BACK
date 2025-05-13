@@ -2,12 +2,45 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import Employees from   '../models/employees.model.js'
 import crypto from 'crypto';
+import { Op } from 'sequelize';
 import {sendOTP, sendNotification} from  './email.controller.js'
 import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects, Levels, Certifications} from '../models/associations.js';
 import Certinfo from '../models/certinfo.model.js';
 import Absinfo from '../models/absinfo.model.js';
+import Courseinfo from '../models/courseinfo.model.js';
 
+ /* Adds course to employee    
+    Returns { "msg" : "Ability Added"} if ok
+*/
+export const addCourse = async (req, res) =>{
+    const employeeId = req.employeeId
+    const courseId = req.body.courseId
+    const favstatus  = req.body.favstatus    
+    try{
 
+        const courseinfo = await Courseinfo.findOne({where : {[Op.and] : [{idEmployee : employeeId}, { idCourse : courseId}]}})
+
+        if(courseinfo){            
+            await courseinfo.update({
+                favstatus : favstatus
+            })
+            return res.status(200).json({msg : `coursed ${courseinfo.favstatus ? 'liked' : 'disliked'}`})
+        }
+            
+         await Courseinfo.create({
+            idEmployee : employeeId,
+            idCourse :  courseId,
+            favstatus : favstatus
+        })
+
+        return res.status(200).json({msg : "course Added"})
+        
+    }catch(error){
+        console.log(error)
+        return res.status(400).json({error: "Something went wrong"})
+    }
+    
+}
 
  /* Adds ability to employee    
     Returns { "msg" : "Ability Added"} if ok
@@ -16,13 +49,33 @@ export const addCertifications = async(req, res) =>{
     const employeeId = req.employeeId
     const certificationId = req.body.certificationId
     const expiration = req.body.expiration
+    const today = new Date()
+    let currentExpiration = new Date()
     try{
+
+        let certinfo = await Certinfo.findOne({where : {
+                [Op.and] : [{idEmployee : employeeId}, {idCert : certificationId}],
+            },
+             order : [['createdAt', 'DESC']]
+        })
+
+        if(certinfo)
+            currentExpiration = new Date(certinfo.expiration)            
+
+        if(currentExpiration > today)
+            return res.status(400).json({msg :  "this certifications is currently valid"})
+
+        
         await Certinfo.create({
             idEmployee: employeeId,
             idCert:  certificationId,
             expiration : expiration,
         })
+
         return res.status(200).json({msg : "certification Added"})
+                
+        
+
     }catch(error){
         console.error(error)
         return res.status(400).json({error: "Something went wrong"})
@@ -145,6 +198,13 @@ export const addAbilities = async(req, res) =>{
     const employeeId = req.employeeId
     const abilityId = req.body.abilityId
     try{
+        const absinfo = await Absinfo.findAll({
+            where : {[Op.and] : [{idemployee :  employeeId}, {idabs : abilityId}]}
+        })
+
+        if(absinfo)
+            return res.status(400).json({msg:  "Ability already added"})
+        
         await Absinfo.create({
             idemployee: employeeId,
             idabs:  abilityId
