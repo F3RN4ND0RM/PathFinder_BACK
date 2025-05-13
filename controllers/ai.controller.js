@@ -15,7 +15,7 @@ export const coursesRecommendations = async(req, res) =>{
     const client = new OpenAI({
         apiKey : process.env.OAIKEY,
         baseURL : "https://api.deepseek.com/v1"})
-    
+            
     const tecnologias = "Me interesa aprender python y poder crear inteligencia artificial."
     const meta = "Mi meta es poder crear modelos de IA para poder automatizar los procesos en Accenture"
     const proyecto = "Creacion de modelos utilizando Gemini y OpenAI"

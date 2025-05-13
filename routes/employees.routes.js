@@ -1,13 +1,26 @@
 import { Router } from 'express'
 import { check } from "express-validator";
 import {checkValidator} from "../middlewares/check-validator.js"
-import {logIn, signUp, updateEmployeeInfo, getEmployeeInfo, addAbilities, getEmployeeCourses, getEmployeeProject, getEmployeeCertifications, addCertifications, addCourse} from '../controllers/employees.controller.js'
+import {logIn, signUp, updateEmployeeInfo, getEmployeeInfo, addAbilities, getEmployeeCourses, getEmployeeProject, getEmployeeCertifications, addCertifications, addCourse, updateGoals} from '../controllers/employees.controller.js'
 import {validatesJWT} from '../middlewares/jwt-validator.js'
 import { validatesAbilities } from '../middlewares/abilities-validator.js';
 import {validatesCertifications} from "../middlewares/certifications-validator.js"
 import { expirationValidation } from '../middlewares/expiration-validator.js';
 import {validatesCourse} from "../middlewares/courses-validator.js"
 const router = Router()
+
+
+
+
+//Adds course to employees
+router.put('/goals', [    
+    check('technologies', 'Technologies empty').notEmpty(),
+    check('project', 'Project empty').notEmpty(),
+    check('goals', 'goal empty').notEmpty(),
+    checkValidator,         
+    //Validates JWT
+    validatesJWT,        
+], updateGoals)
 
 //Adds course to employees
 router.put('/courses', [    

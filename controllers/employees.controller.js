@@ -4,10 +4,37 @@ import Employees from   '../models/employees.model.js'
 import crypto from 'crypto';
 import { Op } from 'sequelize';
 import {sendOTP, sendNotification} from  './email.controller.js'
-import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects, Levels, Certifications} from '../models/associations.js';
+import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects, Levels, Certifications, Goals} from '../models/associations.js';
 import Certinfo from '../models/certinfo.model.js';
 import Absinfo from '../models/absinfo.model.js';
 import Courseinfo from '../models/courseinfo.model.js';
+
+
+ /* updates goals of employee    
+    Returns { "msg" : "goals updated"} if ok
+*/
+export const updateGoals =  async(req, res) =>{
+    const employeeId = req.employeeId
+    const technologies = req.body.technologies
+    const goal = req.body.goals
+    const project = req.body.project
+
+    try{
+        let goals = await Goals.findOne({where : {idEmployee : employeeId}})
+        
+        if(goals){
+            await goals.update({goals : goal, project : project, technologies : technologies})
+            return res.status(200).json({msg : "Goals updated"})
+        }
+            
+        await Goals.create({goal : goal, project : project, technologies : technologies})
+        return res.status(200).json({msg : "Goals created"})
+
+    }catch(error){
+        console.log(error)
+        return res.status(400).json({error: "Something went wrong"})
+    }
+}
 
  /* Adds course to employee    
     Returns { "msg" : "Ability Added"} if ok
@@ -24,7 +51,7 @@ export const addCourse = async (req, res) =>{
             await courseinfo.update({
                 favstatus : favstatus
             })
-            return res.status(200).json({msg : `coursed ${courseinfo.favstatus ? 'liked' : 'disliked'}`})
+            return res.status(200).json({msg : `course ${courseinfo.favstatus ? 'liked' : 'disliked'}`})
         }
             
          await Courseinfo.create({
@@ -204,7 +231,7 @@ export const addAbilities = async(req, res) =>{
 
         if(absinfo)
             return res.status(400).json({msg:  "Ability already added"})
-        
+
         await Absinfo.create({
             idemployee: employeeId,
             idabs:  abilityId
@@ -235,6 +262,9 @@ export const getEmployeeInfo = async(req,res)=>{
                 through : {
                     attributes : ['createdAt']
                 }
+            },{
+                model : Goals,    
+                attributes : ['technologies', 'project', 'goals']           
             }]
         })
 
