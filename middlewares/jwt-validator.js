@@ -15,21 +15,26 @@ export const validatesJWT = async (req, res, next) => {
     
 
     try{
+
         //If theres token         
         if(token){
             //Verify it 
-            await jwt.verify(token,String(process.env.SECRET), (err, employeeToken) => {
+                     
+            await jwt.verify(token,String(process.env.SECRET), (err, employeeToken) => {                
                 //updates employee id
                 if(!err)
                     employeeId = employeeToken.id                
             })
         }         
+
+      
         
         if(employeeId == 0)
             return res.status(400).json({error: "User not authenticated"})
 
         //Append employee  to body
         req.employeeId = employeeId
+        
         next()
 
     }catch(error){

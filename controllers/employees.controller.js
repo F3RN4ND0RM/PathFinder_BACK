@@ -4,10 +4,60 @@ import Employees from   '../models/employees.model.js'
 import crypto from 'crypto';
 import { Op } from 'sequelize';
 import {sendOTP, sendNotification} from  './email.controller.js'
-import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects, Levels, Certifications, Goals} from '../models/associations.js';
+import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects, Levels, Certifications, Goals, Feedback} from '../models/associations.js';
 import Certinfo from '../models/certinfo.model.js';
 import Absinfo from '../models/absinfo.model.js';
 import Courseinfo from '../models/courseinfo.model.js';
+
+
+
+ /* get Employees (staffs)
+    Returns { "msg" : "goals updated"} if ok
+*/
+export const getEmployeesStaff = async(req, res) =>{
+    try{
+        const staff = await Emp.findAll({
+            attributes : ['name', 'email', 'capability', 'rolename', 'idlevel'],
+            where : {staff : true},
+            include : [{
+                model: Abs,
+                as: 'abilitiesOfEmployee',      
+                attributes : ['name','id'],
+                through : {
+                    attributes : []
+                }
+            }, 
+            {
+                model : Roles,
+                attributes : ['id', 'name', 'description'],
+                as:'rolesOfEmployee', 
+
+                through : {
+                    attributes : ['status', 'createdAt', 'updatedAt'],                
+                },
+                include :{
+                    model : Projects,
+                    attributes : ['name', 'status'],
+                    where :  {
+                        status : true
+                    }                                  
+                },
+ 
+
+                
+                
+            },{
+                model : Certifications,
+                as : 'certificationsOfEmployee'
+            }]})
+
+        return res.status(200).json({staff})
+
+    }catch(error){
+        console.log(error)
+        return res.status(400).json({error: error})
+    }
+}
 
 
  /* updates goals of employee    
@@ -225,9 +275,11 @@ export const addAbilities = async(req, res) =>{
     const employeeId = req.employeeId
     const abilityId = req.body.abilityId
     try{
-        const absinfo = await Absinfo.findAll({
+        
+        const absinfo = await Absinfo.findOne({
             where : {[Op.and] : [{idemployee :  employeeId}, {idabs : abilityId}]}
         })
+        
 
         if(absinfo)
             return res.status(400).json({msg:  "Ability already added"})
