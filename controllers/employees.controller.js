@@ -17,8 +17,8 @@ import Courseinfo from '../models/courseinfo.model.js';
 export const getEmployeesStaff = async(req, res) =>{
     try{
         const staff = await Emp.findAll({
-            attributes : ['name', 'email', 'capability', 'rolename', 'idlevel'],
-            where : {staff : true},
+            attributes : ['name', 'email', 'capability', 'rolename', 'idlevel', "staff"],
+            where : {staff : false},
             include : [{
                 model: Abs,
                 as: 'abilitiesOfEmployee',      
