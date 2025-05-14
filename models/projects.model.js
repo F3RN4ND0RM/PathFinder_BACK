@@ -14,8 +14,7 @@ const Projects = sequelize.define('Projects',
             allowNull : false
         },
         status : {
-            type : DataTypes.STRING,
-            allowNull : false
+            type : DataTypes.STRING,        
         },
         startDate : {
             type : DataTypes.DATE,

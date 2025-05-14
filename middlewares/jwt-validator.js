@@ -15,11 +15,9 @@ export const validatesJWT = async (req, res, next) => {
     
 
     try{
-
         //If theres token         
         if(token){
-            //Verify it 
-                     
+            //Verify it                      
             await jwt.verify(token,String(process.env.SECRET), (err, employeeToken) => {                
                 //updates employee id
                 if(!err)
