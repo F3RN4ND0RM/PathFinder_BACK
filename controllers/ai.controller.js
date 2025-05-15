@@ -1,7 +1,7 @@
 
 
 import { Op } from "sequelize"
-import {Employees as Emp, Abilities as Abs, Projects, Courses, Certifications,Assigned, Roles} from "../models/associations.js"
+import {Employees as Emp, Abilities as Abs, Projects, Courses, Certifications,Assigned, Roles, Goals} from "../models/associations.js"
 import sequelize from "../db/db.js"
 import dotenv from 'dotenv'; 
 import OpenAI from "openai";
@@ -15,13 +15,26 @@ dotenv.config()
 export const coursesRecommendations = async(req, res) =>{
     
     const employeeId = req.employeeId
+
+    const goal = await Emp.findByPk(employeeId,{
+        attributes : [],
+        include : {
+            model : Goals,
+            attributes : ['technologies', 'goals', 'project']
+
+        }
+    })
+
+
+    if(!goal)
+        return res.status(400).json({error : "Goals not setted"})
+   
     const client = new OpenAI({
         apiKey : process.env.OAIKEY,
         baseURL : "https://api.deepseek.com/v1"})
             
-    const tecnologias = "Me interesa aprender python y poder crear inteligencia artificial."
-    const meta = "Mi meta es poder crear modelos de IA para poder automatizar los procesos en Accenture"
-    const proyecto = "Creacion de modelos utilizando Gemini y OpenAI"
+    const {technologies, goals, project} = goal.dataValues.Goal
+        
 
     try{        
 
@@ -37,7 +50,7 @@ export const coursesRecommendations = async(req, res) =>{
             type: sequelize.QueryTypes.SELECT
         });
 
-        const certifications = await Employees.findByPk(employeeId,{
+        const certifications = await Emp.findByPk(employeeId,{
             attributes : [],
             include : {
                 model : Certifications,
@@ -52,9 +65,9 @@ export const coursesRecommendations = async(req, res) =>{
         let context = {context :{ 
             certifications,
             availableCourses,
-            tecnologias,
-            meta, 
-            proyecto,
+            technologies,
+            goals, 
+            project,
             task: "Regresa un texto arreglo plano, no añadas texto. Con base en las certificaciones del empleado, los cursos disponibles y sus intereses (tecnologías, meta y proyecto), genera un arreglo de los ID de los cursos más relevantes para alcanzar su meta y completar su proyecto. Devuelve únicamente un arreglo plano con los ID numéricos más apropiados en orden de prioridad. considera el nivel de expertiz según las certificaciones"         
         }}
 
