@@ -23,6 +23,9 @@ Roles.belongsToMany(Employees, {as : 'rolesByEmployee', foreignKey : 'idRole', t
 Projects.hasMany(Roles, { foreignKey : 'idProject'})
 Roles.belongsTo(Projects, { foreignKey : 'idProject'})
 
+Roles.hasMany(Assigned, {foreignKey : 'idRole'})
+Assigned.belongsTo(Roles, {foreignKey : 'idRole'})
+
 Levels.hasMany(Employees, {foreignKey : 'idlevel'})
 Employees.belongsTo(Levels, {foreignKey : 'idlevel'})
 
@@ -32,7 +35,7 @@ Certifications.belongsToMany(Employees, {as : 'employyesByCertifications', forei
 Employees.hasOne(Goals, {foreignKey : 'idEmployee'})
 Goals.belongsTo(Employees, {foreignKey : 'idEmployee'})
 
-Assigned.hasMany(Feedback, {foreignKey : 'idAssigned'})
-Feedback.belongsTo(Assigned,{foreignKey : 'idAssigned'})
 
-export { Employees, Abilities, Courses,Roles, Projects, Levels, Certifications, Goals, Feedback,};
+
+
+export { Employees, Abilities, Courses,Roles, Projects, Levels, Certifications, Goals, Feedback, Assigned};

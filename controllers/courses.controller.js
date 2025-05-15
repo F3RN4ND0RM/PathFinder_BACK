@@ -1,8 +1,8 @@
 import {Courses, Employees,} from "../models/associations.js"
 
 
-/* gets all courses
-    Returns { msg: PRoject finished } if ok
+/* gets all courses 
+    Returns { courses } if ok
 */
 export const getCourses = async(req, res) =>{
     const employeeId = req.employeeId
