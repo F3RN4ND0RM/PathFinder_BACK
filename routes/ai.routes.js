@@ -13,9 +13,7 @@ router.get('/courses',
     validatesJWT,
     coursesRecommendations)
 
-router.get('/staff',[
-    check('roleId' , 'roleId empty').notEmpty(),
-    checkValidator,
+router.get('/staff',[    
     validatesJWT,
     
 ],staffRecommendations )

@@ -101,7 +101,7 @@ export const coursesRecommendations = async(req, res) =>{
 
 export const staffRecommendations = async(req, res)=>{
     const employeeId = req.employeeId
-    const roleId = req.body.roleId
+    const roleId = req.query.roleId
     const client = new OpenAI({
         apiKey : process.env.OAIKEY,
         baseURL : "https://api.deepseek.com/v1"})
@@ -145,37 +145,35 @@ export const staffRecommendations = async(req, res)=>{
                 },     
         }]})
      
-
         let context = {context :{                             
-            task: "Assign 10 employees to each available role based on their abilities, previous roles, and certifications. i expect an output as setted on output_Format withoun any text added to it",
+            task: "Assign obligatory 10 employees to the role based on their abilities, previous roles, and certifications. i expect an JSON as response as setted on outpu_format without any extra information or punctuations",
             input_format: {
-                staff: [
+                staff: [  //available employees
                     {
-                    id: "employeeId",
-                    name: "employeeName",
-                    abilitiesOfEmployee: ["ability1", "ability2"],
-                    rolesOfEmployee: ["previousRole1", "previousRole2"],
-                    certificationsOfEmployee: ["cert1", "cert2"]
+                        id: "employeeId", //id of employee
+                        name: "employeeName", //name of employee
+                        abilitiesOfEmployee: [ {name: "name of ability"}],  //abilities of employee
+                        rolesOfEmployee: [{name:"name of previous role"}], //previous roles of employee
+                        certificationsOfEmployee: [{name : "name of certification"}] //cerifications of employee
                     }
                 ],
-                roles: [
+                roles  : [ //available roles
                     {
-                    id: "roleId",
-                    name: "roleName"
+                        id: "roleId",
+                        name: "roleName"
                     }
                 ]
                 },
-            output_format: 
+            output_format:
                 {
-                    rolename: [
-                    {
-                        id: "employeeId",
-                        name: "employeeName"
-                    }
+                    rolename: [ //name of role
+                        {
+                            id: "employeeId", //id of employee
+                            name: "employeeName", //name of employee
+                        }
                     ]
                 },           
             input :  {staff,roles }}}
-                    
 
         const response = await client.chat.completions.create({            
             model:"deepseek-chat",
@@ -184,8 +182,9 @@ export const staffRecommendations = async(req, res)=>{
             ]
             }
         )        
-        let staffRecomended =response.choices[0].message.content
-        staffRecomended = JSON.parse(staffRecomended.slice(7,staffRecomended.length-3))        
+        console.log(response.choices[0].message.content)
+        let staffRecomended =response.choices[0].message.content       
+        staffRecomended = JSON.parse(staffRecomended.slice(7,staffRecomended.length-3))            
         return res.status(200).json(staffRecomended)
     }catch(error){
         console.log(error)
