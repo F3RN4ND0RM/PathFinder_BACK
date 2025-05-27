@@ -35,7 +35,9 @@ Certifications.belongsToMany(Employees, {as : 'employyesByCertifications', forei
 Employees.hasOne(Goals, {foreignKey : 'idEmployee'})
 Goals.belongsTo(Employees, {foreignKey : 'idEmployee'})
 
+Courses.hasMany(Courseinfo, {foreignKey : 'idCourse'})
+Courseinfo.belongsTo(Courses, {foreignKey : 'idCourse'})
 
 
 
-export { Employees, Abilities, Courses,Roles, Projects, Levels, Certifications, Goals, Feedback, Assigned};
+export { Employees, Abilities, Courses,Roles, Projects, Levels, Certifications, Goals, Feedback, Assigned, Courseinfo};

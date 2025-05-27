@@ -4,10 +4,16 @@ import { check } from 'express-validator'
 import { checkValidator } from '../middlewares/check-validator.js'
 import {validatesLvl2} from "../middlewares/lvl2-validator.js"
 import {validatesJWT} from '../middlewares/jwt-validator.js'
-import {getProjects, createProject, finishProject, createRoles, getProject, assignToRole} from "../controllers/projects.controller.js"
+import {getProjects, createProject, finishProject, createRoles, getProject, assignToRole, deleteAssignation} from "../controllers/projects.controller.js"
 import {expirationValidation} from "../middlewares/expiration-validator.js"
 const router = Router()
 
+router.delete('/',[
+    check('idAssignation', 'idAssignation empty').notEmpty(),
+    checkValidator,
+    validatesJWT,
+    validatesLvl2
+],deleteAssignation)
 
 router.get('/:projectId', [
     validatesJWT,

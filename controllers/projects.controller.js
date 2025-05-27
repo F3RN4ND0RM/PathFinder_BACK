@@ -2,6 +2,49 @@ import Assigned from "../models/assigned.model.js"
 import {Employees, Projects, Roles} from  "../models/associations.js"
 import sequelize from "../db/db.js"
 
+
+
+/*  Delete assignations
+    Returns { msg: Assignation deleted} if ok
+*/
+export const deleteAssignation = async(req, res) =>{
+
+    const assignationId = req.body.idAssignation
+
+    const transaction = await sequelize.transaction();
+
+    try{
+
+        const assignation = await Assigned.findByPk(assignationId,{transaction})
+
+        if(!assignation)
+            return res.status(404).json({error: "something went wrong"})
+
+        await assignation.update({
+            status: false,
+            transaction  
+        });
+
+
+        
+        await Employees.update(
+            { staff: true },
+            { where: { id: assignation.idEmployee }, transaction }
+        );
+
+        await transaction.commit();
+
+
+        return res.status(200).json({msg: "Assignation deleted"})
+
+    }catch(error){
+        console.log(error)
+        return res.status(400).json({error: error})
+    }
+}
+
+
+
 /*  set employee to especific project's role
     Returns { msg: employee setted} if ok
 */
@@ -144,7 +187,7 @@ export const getProject = async(req, res) =>{
                     as: 'rolesByEmployee',                    
                     attributes : ['id', 'name', 'email', 'rolename'],
                     through : {
-                        attributes : ['createdAt', 'updatedAt']
+                        attributes : ['createdAt', 'updatedAt', 'status', 'id']
                     },                    
                 },    
             }
