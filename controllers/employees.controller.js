@@ -11,6 +11,42 @@ import Courseinfo from '../models/courseinfo.model.js';
 
 
 
+
+/*  get employees timeline
+    Returns { "msg" : "goals updated"} if ok*/
+export const getEmployeeTimeline = async(req, res) =>{
+    const employeeId = req.employeeId
+    try{
+
+        const timeline = await Emp.findByPk(employeeId, {
+            attributes : [],
+            include: [{
+                model : Courses,
+                attributes : ["name"],                
+                through : {
+                    attributes : ['updatedAt', "status"]
+                },
+                as : 'coursesOfEmployee'
+            }, {
+                model : Roles,
+                as : 'rolesOfEmployee',
+                attributes : ["name"],
+                through : {
+                    attributes : ["createdAt"]
+                }
+            }],
+
+
+        })
+        return  res.status(200).json(timeline)
+
+    }catch(error){
+        console.log(error)
+        return res.status(400).json({error: "Something went wrong"})
+    }
+
+}
+
  /* get Employees (staffs)
     Returns { "msg" : "goals updated"} if ok
 */
