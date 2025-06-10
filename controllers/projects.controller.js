@@ -19,7 +19,7 @@ export const deleteAssignation = async(req, res) =>{
 
         if(!assignation){
             console.log(assignation)
-            return res.status(404).json({error: "something went wrong"})
+            return res.status(404).json({error: "idAssignation doesn't exist"})
         }
             
 
