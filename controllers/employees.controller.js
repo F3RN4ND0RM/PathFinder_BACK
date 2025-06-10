@@ -54,7 +54,7 @@ export const getEmployeesStaff = async(req, res) =>{
     try{
         const staff = await Emp.findAll({
             attributes : ['id','name', 'email', 'capability', 'rolename', 'idlevel', "staff"],
-            where : {staff : false},
+            where : {staff : false, idlevel : 1},
             include : [{
                 model: Abs,
                 as: 'abilitiesOfEmployee',      
