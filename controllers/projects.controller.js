@@ -15,7 +15,7 @@ export const deleteAssignation = async(req, res) =>{
 
     try{
 
-        const assignation = await Assigned.findByPk(assignationId,{transaction})
+        const assignation = await Assigned.findOne({where : {id : assignationId}},{transaction})
 
         if(!assignation){
             console.log(assignation)
