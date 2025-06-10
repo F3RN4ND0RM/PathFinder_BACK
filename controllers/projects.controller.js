@@ -17,15 +17,15 @@ export const deleteAssignation = async(req, res) =>{
 
         const assignation = await Assigned.findByPk(assignationId,{transaction})
 
-        if(!assignation)
+        if(!assignation){
+            console.log(assignation)
             return res.status(404).json({error: "something went wrong"})
+        }
+            
 
         await assignation.update({
-            status: false,
-            transaction  
-        });
-
-
+            status: false,            
+        },{transaction});
         
         await Employees.update(
             { staff: true },
