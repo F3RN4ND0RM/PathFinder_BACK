@@ -11,7 +11,7 @@ const Employees = sequelize.define('Employee',
         },
         pass : {
             type : DataTypes.STRING,
-            allowNull : false
+            allowNull : true
         },
         email : {
             type : DataTypes.STRING,
@@ -19,27 +19,28 @@ const Employees = sequelize.define('Employee',
         },
         capability : {
             type : DataTypes.STRING,
-            allowNull : false
+            allowNull : true
         },
         rolename : {
             type : DataTypes.STRING,
-            allowNull : false
+            allowNull : true
         },
         percentage : {
             type : DataTypes.INTEGER,
-            allowNull : false
+            default : 0
         },
         startdate : {
-            type : DataTypes.DATE,
-            allowNull : false
+            type : DataTypes.DATE,      
+            default : Date()              
         },
         staff : {
             type : DataTypes.BOOLEAN,
-            allowNull : false
+            default : true
         },
         idlevel : {
             type : DataTypes.INTEGER,
             allowNull : false,
+            default : 1,
             references :{
                 model: Levels,
                 key: 'id'

@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { check } from "express-validator";
 import {checkValidator} from "../middlewares/check-validator.js"
-import {logIn, signUp, updateEmployeeInfo, getEmployeeTimeline, getEmployeeInfo, addAbilities, getEmployeeCourses, getEmployeeProject, getEmployeeCertifications, addCertifications, addCourse, updateGoals, getEmployeesStaff} from '../controllers/employees.controller.js'
+import {createEmploye, logIn, signUp, updateEmployeeInfo, getEmployeeTimeline, getEmployeeInfo, addAbilities, getEmployeeCourses, getEmployeeProject, getEmployeeCertifications, addCertifications, addCourse, updateGoals, getEmployeesStaff} from '../controllers/employees.controller.js'
 import {validatesJWT} from '../middlewares/jwt-validator.js'
 import { validatesAbilities } from '../middlewares/abilities-validator.js';
 import {validatesCertifications} from "../middlewares/certifications-validator.js"
@@ -10,6 +10,13 @@ import {validatesCourse} from "../middlewares/courses-validator.js"
 import {validatesLvl2} from "../middlewares/lvl2-validator.js"
 const router = Router()
 
+router.post('/add', [    
+    check('name', 'name can not be empty').notEmpty(),
+    check('email', 'email can not be empty').notEmpty(),
+    check('idlevel', 'idlevel can not be empty').notEmpty(),
+    checkValidator,         
+    validatesJWT,
+    validatesLvl2], createEmploye)
 
 //getsProject from employee
 router.get('/timeline', [                 

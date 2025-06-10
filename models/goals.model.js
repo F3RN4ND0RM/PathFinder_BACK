@@ -15,15 +15,18 @@ const Goals = sequelize.define('Goals',
         },
         technologies : {
             type : DataTypes.STRING,
-            allowNull : false
+            allowNull : false,
+            defaultValue : ""
         },
         goals : {
             type : DataTypes.STRING,
-            allowNull : false
+            allowNull : false,
+            defaultValue : ""
         },
         project : {
             type : DataTypes.STRING,
-            allowNull : false
+            allowNull : false,
+            defaultValue : ""
         }
     },
     {

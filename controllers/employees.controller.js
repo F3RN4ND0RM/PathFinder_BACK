@@ -8,8 +8,31 @@ import {Employees as Emp ,Abilities as Abs, Courses, Roles, Projects, Levels, Ce
 import Certinfo from '../models/certinfo.model.js';
 import Absinfo from '../models/absinfo.model.js';
 import Courseinfo from '../models/courseinfo.model.js';
+import sequelize from '../db/db.js';
 
+/*Create employee
+Returns {"msg" ; "employee created"
+*/
+export const createEmploye = async(req, res) =>{
+    const employee = req.body
+    try{
 
+        const transaction = await sequelize.transaction();
+        const newEmployee = await Employees.create(employee, {transaction})
+
+        if(!newEmployee)
+            return res.status(400).json({msg : "Something went wrong"})
+
+        await Goals.create({idEmployee : newEmployee.id}, {transaction})
+
+        transaction.commit()
+        return res.status(200).json({msg : `new Employee ${newEmployee.name}`})
+        
+    }catch(error){
+        console.error(error)
+        return res.status(400).json({error : error})
+    }
+}
 
 
 /*  get employees timeline
@@ -41,7 +64,7 @@ export const getEmployeeTimeline = async(req, res) =>{
         return  res.status(200).json(timeline)
 
     }catch(error){
-        console.log(error)
+        console.error(error)
         return res.status(400).json({error: "Something went wrong"})
     }
 
