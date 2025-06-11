@@ -9,9 +9,38 @@ import Certinfo from '../models/certinfo.model.js';
 import Absinfo from '../models/absinfo.model.js';
 import Courseinfo from '../models/courseinfo.model.js';
 import sequelize from '../db/db.js';
+import { body } from 'express-validator';
+
+
+/*updates course that employee is register to
+Returns {"msg" ; "Course updated}"
+*/
+export const updateEmployeesCourse = async(req, res) =>{
+    const employeeId = req.employeeId
+    const courseId = req.body.courseId
+    const status = req.body.status
+    try{
+        
+        const transaction = sequelize.transaction()
+        const courseinfo = await Courseinfo.findOne({where:{ [Op.and] : [{idEmployee : employeeId},  {idCourse : courseId}]}}, {transaction})
+
+
+        if(!courseinfo)
+            return res.status(400).json({error : `This user is not subcribe to this course`})
+
+        await courseinfo.update({status : status})
+
+        return res.status(200).json({msg:`course updated`})
+
+    }catch(error){
+        console.error(error)
+        return res.status(400).json({error: "Something went wrong"})
+    }
+
+}
 
 /*Create employee
-Returns {"msg" ; "employee created"
+Returns {"msg" ; "employee created}"
 */
 export const createEmploye = async(req, res) =>{
     const employee = req.body

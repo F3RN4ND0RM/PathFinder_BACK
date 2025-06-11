@@ -15,7 +15,7 @@ export const validatesCourse = async (req, res, next) => {
     
     try{
         //If theres abilitie          
-        const course = await Courses.findByPk(courseId)
+        const course = await Courses.findOne({where : {id : courseId}})
         
         if(!course)
             return res.status(400).json({error: "course not valid"})
