@@ -8,6 +8,7 @@ import coursesRoute from '../routes/courses.routes.js'
 import aiRoute from "../routes/ai.routes.js"
 import projectsRoute from '../routes/projects.routes.js'
 import dataRoute from "../routes/data.routes.js"
+import certificationsRoute from "../routes/certifications.routes.js"
 
 //Defining server class
 class Server{
@@ -20,7 +21,8 @@ class Server{
         courses : '/courses',
         ai : '/ai',
         projects : '/projects',
-        data : '/data'
+        data : '/data',
+        Certifications : '/certifications'
     }
 
     //server constructor, inititilizes server
@@ -67,6 +69,7 @@ class Server{
         this.app.use(this.apiPaths.ai, aiRoute)
         this.app.use(this.apiPaths.projects, projectsRoute)
         this.app.use(this.apiPaths.data, dataRoute)
+        this.app.use(this.apiPaths.Certifications, certificationsRoute)
     }
 
     //Initilizes server
