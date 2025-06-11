@@ -211,8 +211,7 @@ export const getProject = async(req, res) =>{
 */
 export const getProjects = async(req, res) =>{
     try{
-        const projects = await Projects.findAll({
-            where : {status :  true},
+        const projects = await Projects.findAll({            
             attributes : ['id', 'name', 'description', 'startDate', 'endDate'],
             include : {
                 model : Roles,                                
