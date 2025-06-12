@@ -296,7 +296,7 @@ export const getEmployeeProject = async(req, res) =>{
                 attributes : ['id', 'name', 'description'],
                 as:'rolesOfEmployee', 
                 through : {
-                    attributes : ['status', 'createdAt', 'updatedAt']
+                    attributes : ['id', 'status', 'createdAt', 'updatedAt']
                 },
                 
                 include : {
