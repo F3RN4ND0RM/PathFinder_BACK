@@ -238,9 +238,7 @@ export const addCertifications = async(req, res) =>{
         })
 
         return res.status(200).json({msg : "certification Added"})
-                
-        
-
+                                
     }catch(error){
         console.error(error)
         return res.status(400).json({error: "Something went wrong"})

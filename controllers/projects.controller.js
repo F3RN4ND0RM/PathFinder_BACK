@@ -29,7 +29,8 @@ export const deleteAssignation = async(req, res) =>{
         
         await Employees.update(
             { staff: true },
-            { where: { id: assignation.idEmployee }, transaction }
+            { where: { id: assignation.idEmployee } },
+            {transaction}
         );
 
         await transaction.commit();
