@@ -221,7 +221,7 @@ export const getProjects = async(req, res) =>{
                     as: 'rolesByEmployee',                    
                     attributes : ['id', 'name', 'email', 'rolename'],
                     through : {
-                        attributes : ['createdAt', 'updatedAt', 'status']
+                        attributes : ['id', 'createdAt', 'updatedAt', 'status']
                     },                    
                 },    
             }
